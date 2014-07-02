@@ -1,0 +1,2 @@
+Wersja 1.0
+Inital release
