@@ -5,7 +5,7 @@ import urllib, urllib2, re, sys, math
 import xbmcaddon, xbmc, xbmcgui, simplejson
 import urlparse, httplib, random, string
 
-scriptID = 'plugin.video.mrknow'
+scriptID = 'plugin.video.alekino'
 scriptname = "Wtyczka XBMC www.mrknow.pl"
 ptv = xbmcaddon.Addon(scriptID)
 
@@ -20,7 +20,7 @@ class pageparser:
     self.cm = libCommon.common()
     self.up = urlparser.urlparser()
     self.settings = settings.TVSettings()
-    
+
 
 
   def hostSelect(self, v):
@@ -37,7 +37,7 @@ class pageparser:
 
 
   def getHostName(self, url, nameOnly = False):
-    hostName = ''       
+    hostName = ''
     match = re.search('http://(.+?)/',url)
     if match:
       hostName = match.group(1)
@@ -52,7 +52,7 @@ class pageparser:
     host = self.getHostName(url)
     log.info("video hosted by: " + host)
     log.info(url)
-    
+
     if host == 'livemecz.com':
         nUrl = self.livemecz(url)
         print "Self",nUrl
@@ -75,8 +75,8 @@ class pageparser:
     elif host == 'goodcast.tv':
         nUrl = self.goodcasttv(url)
     elif host == 'mecz.tv':
-        nUrl = self.mecztv(url)        
-        
+        nUrl = self.mecztv(url)
+
     elif nUrl  == '':
         print "Jedziemy na ELSE - "+  nUrl
         nUrl = self.pageanalyze(url,host)
@@ -105,7 +105,7 @@ class pageparser:
             else:
                 nUrl = self.pageanalyze(match2[0],url)
         #nUrl = self.pageanalyze('http://goodcast.tv/' + match1[0][0], 'http://goodcast.tv/' + match1[0][0])
-        
+
         #return nUrl
         return False
 
@@ -125,14 +125,14 @@ class pageparser:
     if len(match3)>0:
         nUrl = self.up.getVideoLink(match1[0], url)
         return nUrl
-    
-    
+
+
   def streamon(self,url):
     self.COOKIEFILE = ptv.getAddonInfo('path') + os.path.sep + "cookies" + os.path.sep + "streamon.cookie"
     nUrl = self.pageanalyze(url,url)
-    return nUrl    
+    return nUrl
 
-    
+
   def typertv(self,url):
     query_data = { 'url': url, 'use_host': False, 'use_cookie': False, 'use_post': False, 'return_data': True }
     link = self.cm.getURLRequestData(query_data)
@@ -141,11 +141,11 @@ class pageparser:
     if len(match1)>0:
         print ("Mam Iframe",match1)
         nUrl = self.pageanalyze('http://'+self.getHostName(url)+'/'+match1[0][0],url)
-        return nUrl    
-    
-    
-    
-    
+        return nUrl
+
+
+
+
   def azap(self,url):
     query_data = { 'url': url, 'use_host': False, 'use_cookie': False, 'use_post': False, 'return_data': True }
     link = self.cm.getURLRequestData(query_data)
@@ -157,10 +157,10 @@ class pageparser:
         nUrl =  self.up.getVideoLink(url)
         print nUrl
         return nUrl
-        
+
     else:
         return self.pageanalyze(match1[0])
-    
+
   def bbpolska(self,url):
     query_data = { 'url': url, 'use_host': False, 'use_cookie': False, 'use_post': False, 'return_data': True }
     link = self.cm.getURLRequestData(query_data)
@@ -172,11 +172,11 @@ class pageparser:
         return self.pageanalyze(match1[0],match1[0])
     else:
         return False
-    
+
     match=re.compile('<iframe width="(.*?)" height="(.*?)" src="(.*?)" scrolling="no" frameborder="0" style="border: 0px none transparent;">').findall(link)
     print ("Match",match)
     return self.pageanalyze('http://www.transmisje.info'+match[0][2],'http://www.transmisje.info')
-  
+
 
   def transmisjeinfo(self,url):
     query_data = { 'url': url, 'use_host': False, 'use_cookie': False, 'use_post': False, 'return_data': True }
@@ -192,7 +192,7 @@ class pageparser:
     print ("Match",match)
     return self.pageanalyze(match[0],'http://www.realtv.com.pl')
 
- 
+
   def livemecz(self,url):
     query_data = { 'url': url, 'use_host': False, 'use_cookie': False, 'use_post': False, 'return_data': True }
     link = self.cm.getURLRequestData(query_data)
@@ -211,7 +211,7 @@ class pageparser:
 
   def pageanalyze(self,url,referer='',cookie='',headers=''):
     print ('DANE',url,referer,cookie,headers)
-   
+
     if cookie != '':
         query_data = { 'url': url, 'use_host': False, 'use_cookie': True, 'save_cookie': False, 'load_cookie': True, 'cookiefile': cookie, 'use_post': False, 'return_data': True }
         link = self.cm.getURLRequestData(query_data)
@@ -220,13 +220,13 @@ class pageparser:
         query_data = { 'url': url, 'use_host': True, 'host': headers, 'use_cookie': False, 'use_post': False, 'return_data': True }
         link = self.cm.getURLRequestData(query_data)
         print ("LINK headers",link)
-    
+
     else:
         query_data = { 'url': url, 'use_host': False, 'use_cookie': False, 'use_post': False, 'return_data': True }
         link = self.cm.getURLRequestData(query_data)
         print ("LINK",link)
 
-        
+
     match=re.compile('<script type="text/javascript"> channel="(.*?)"; width="(.*?)"; height="(.*?)";</script><script type="text/javascript" src="http://yukons.net/share.js"></script>').findall(link)
     match1=re.compile("<script type='text/javascript'>fid='(.*?)'; v_width=(.*?); v_height=(.*?);</script><script type='text/javascript' src='http://www.reyhq.com/player.js'></script>").findall(link)
     match2=re.compile("<script type='text/javascript' src='http://www.sawlive.tv/embed/(.*?)'>").findall(link)
@@ -250,7 +250,7 @@ class pageparser:
     match20=re.compile('<script type="text/javascript" src="http://(.*?)jjcast.com/(.*?)">').findall(link)
     match21=re.compile('<script type="text/javascript" language="JavaScript" src="http://hqstream.tv/pl?(.*?)"></script>').findall(link)
     match22=re.compile("<script type='text/javascript'>(.*?)</script><script type='text/javascript' src='http://cdn.tiv.pw/stream(.*?).js'></script>").findall(link)
-    
+
     #<script type="text/javascript" language="JavaScript" src="http://hqstream.tv/pl?streampage=dqewdfdewd&width=640&height=360"></script>
     print ("Match",match8,match2,match1,match,match3,match4,match5)
     if len(match) > 0:
@@ -326,4 +326,4 @@ class pageparser:
 
 
 
-          
+
