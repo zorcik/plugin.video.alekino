@@ -128,12 +128,12 @@ class alekinoseriale:
         link = self.cm.getURLRequestData(query_data)
         match = re.compile('<div class="row-fluid bgb pull-right" style="width:680px;padding:10px;margin-top:10px;" id="'+strona+'">(.*?)<div class="p10"></div>', re.DOTALL).findall(link)
         match2 = re.compile('<div class="span2">\n                       <img src="(.*?)" alt=""/>\n                       \n                    </div>', re.DOTALL).findall(link)
-        match1 = re.compile('<td class="episode">\n                       \n                       <a class="o" href="(.*?)">(.*?)</a>\n                       \n                       \n                    </td>\n                     <td class="translation"><span class="w pull-right">(.*?)</span></td>\n                 </tr>\n                 <tr>\n                    <td class="episode" style="width:90px;">\n                       <span class="w">(.*?)</span>\n                    </td>\n', re.DOTALL).findall(match[0])
+        match1 = re.compile('<tr>\n(.*?)<td class="episode" style="width:90px;">\n(.*?)<span class="w">(.*?)</span>\n(.*?)<td class="episode">\n(.*?)\n(.*?)<a class="o" href="(.*?)">(.*?)</a>\n(.*?)\n(.*?)\n(.*?)</td>\n(.*?)<td class="translation"><span class="w pull-right">(.*?)</span></td>\n(.*?)</tr>', re.DOTALL).findall(match[0])
         SerialImage = self.GetImage(url)
         if len(match1) > 0:
             for i in range(len(match1)):
-                title = match1[i][3]+ ' ' + match1[i][1]+' ' + match1[i][2]
-                self.add('alekinoseriale', 'playSelectedMovie', 'None', self.cm.html_special_chars(title), SerialImage, mainUrl[:-1]+ match1[i][0], 'aaaa', 'None', False, False)
+                title = match1[i][2]+ ' ' + match1[i][7]+' ' + match1[i][12]
+                self.add('alekinoseriale', 'playSelectedMovie', 'None', self.cm.html_special_chars(title), SerialImage, mainUrl[:-1]+ match1[i][6], 'aaaa', 'None', False, False)
         xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
     def listsItemsA(self, url):
@@ -155,7 +155,9 @@ class alekinoseriale:
                     title = match1[i][1]
                 if title.find('NOWE') >-1:
                     #print ("Mam nowe", title)
-                    title = title.replace('<span class="subtitle none">',' - NOWE [/COLOR]')
+                    title = title + "[/COLOR]"
+                    title = title.replace('<span class="subtitle">',' - ')
+                    title = title.replace('<span class="subtitle none">','')
                     title = title.replace('/ NOWE</span> ','[COLOR yellow]')
                     title = title.strip()
 
