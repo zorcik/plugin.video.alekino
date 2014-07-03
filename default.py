@@ -18,7 +18,7 @@ import alekino, alekinoseriale
 
 log = pLog.pLog()
 
-class AlekinoTv:
+class AlekinoTV:
   def __init__(self):
     log.info('Filmy online www.alekino.tv')
     self.settings = settings.TVSettings()
@@ -32,10 +32,10 @@ class AlekinoTv:
     if mode == None and name == None and service == None:
         log.info('Wyświetlam kategorie')
         self.CATEGORIES()
-    elif mode == 3:
+    elif mode == 3 or service == 'alekinoseriale':
         tv = alekinoseriale.alekinoseriale()
         tv.handleService()
-    elif mode == 2:
+    elif mode == 2 or service == 'alekino':
         tv = alekino.alekino()
         tv.handleService()
 

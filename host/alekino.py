@@ -283,6 +283,7 @@ class alekino:
         icon = self.parser.getParam(params, "icon")
         strona = self.parser.getParam(params, "strona")
         filtrowanie = self.parser.getParam(params, "filtrowanie")
+        
         print ("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZD",category,url,strona,filtrowanie,name)
         if name == None:
             self.listsMainMenu(MENU_TAB)
@@ -317,8 +318,6 @@ class alekino:
         elif name == 'main-menu' and category == 'Top 100 - najwyżej ocenione':
             log.info('Jest Gorące: ')
             self.listsItemsTop('http://alekino.tv/top100?o=tr')
-
-
         elif name == 'main-menu' and category == "Szukaj":
             key = self.searchInputText()
             if key != None:
@@ -326,6 +325,9 @@ class alekino:
         elif name == 'categories-menu' and category != 'None':
             log.info('url: ' + str(url))
             self.listsItems(url,strona,filtrowanie)
+        else:
+            log.info('Kat: '+category+', '+name)
+
         if name == 'playSelectedMovie':
             data = self.getMovieLinkFromXML(url)
             self.p.LOAD_AND_PLAY_VIDEO(data['link'], title, icon, data['year'])
