@@ -77,11 +77,11 @@ class alekino:
             query_data = { 'url': url, 'use_host': False, 'use_cookie': False, 'use_post': True, 'return_data': True }
             link = self.cm.getURLRequestData(query_data)
             match = re.compile('<!-- Znalezione filmy -->(.*?)<!-- Znalezione seriale -->', re.DOTALL).findall(link)
-            match1 = re.compile('<div class="result box pl-round" style="margin-bottom:10px;">\n                            <a href="(.*?)"><img src="(.*?)" alt="" title="" height="133" width="100"></a>\n                            <a href="(.*?)" class="en pl-white">(.*?)</a>\n                            <span class="small-bread">', re.DOTALL).findall(match[0])
+            match1 = re.compile('<div class="result box pl-round" style="margin-bottom:10px;">\n(.*?)<a href="(.*?)"><img src="(.*?)" alt="" title="" height="133" width="100"></a>\n(.*?)<a href="(.*?)" class="en pl-white">(.*?)</a>', re.DOTALL).findall(match[0])
             if len(match1) > 0:
                 for i in range(len(match1)):
                         #add(self, service, name,               category, title,     iconimage, url, desc, rating, folder = True, isPlayable = True):
-                        self.add('alekino', 'playSelectedMovie', 'None', match1[i][3],  match1[i][1], mainUrl+ match1[i][0], 'aaaa', 'None', False, False)
+                        self.add('alekino', 'playSelectedMovie', 'None', match1[i][5],  match1[i][2], mainUrl+ match1[i][1], 'aaaa', 'None', False, False)
 
             xbmcplugin.endOfDirectory(int(sys.argv[1]))
     def listsItemsTop(self, url):
