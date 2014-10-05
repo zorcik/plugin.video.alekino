@@ -19,7 +19,7 @@ log = pLog.pLog()
 mainUrl = 'http://alekino.tv/'
 catUrl = 'http://alekino.tv/seriale/'
 
-HOST = 'Mozilla/5.0 (Windows NT 6.1; rv:17.0) Gecko/20100101 Firefox/32.0.3'
+HOST = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:32.0) Gecko/20100101 Firefox/32.0'
 
 MENU_TAB = {0: "Alfabetycznie",
             1: "Top dzisiaj",
