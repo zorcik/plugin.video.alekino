@@ -19,7 +19,7 @@ log = pLog.pLog()
 mainUrl = 'http://alekino.tv'
 catUrl = 'http://alekino.tv/filmy/'
 
-HOST = 'Mozilla/5.0 (Windows NT 6.1; rv:17.0) Gecko/20100101 Firefox/17.0'
+HOST = 'Mozilla/5.0 (Windows NT 6.1; rv:17.0) Gecko/20100101 Firefox/32.0.3'
 
 MENU_TAB = {0: "Filmy",
             1: "Filmy z lektorem",
