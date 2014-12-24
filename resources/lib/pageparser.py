@@ -2,8 +2,12 @@
 import cookielib, os, string, StringIO
 import os, time, base64, logging, calendar
 import urllib, urllib2, re, sys, math
-import xbmcaddon, xbmc, xbmcgui, simplejson
+import xbmcaddon, xbmc, xbmcgui
 import urlparse, httplib, random, string
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 scriptID = 'plugin.video.alekino'
 scriptname = "Wtyczka XBMC www.mrknow.pl"
