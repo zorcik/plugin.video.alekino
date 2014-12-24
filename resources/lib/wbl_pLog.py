@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class pLog:
+class wbl_pLog:
   __DEBUG = 0
   __INFO = 1
   __WARN = 2
@@ -30,4 +30,4 @@ class pLog:
   
   def log(self, message, level):
     if self.logLevel <= level:
-      print '[Polish Live TV%s %d] %s' %(self.prefix, level, message)
+      print '[ALEKINO%s %d] %s' %(self.prefix, level, message)

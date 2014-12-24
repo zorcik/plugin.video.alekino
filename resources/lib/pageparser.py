@@ -9,10 +9,10 @@ scriptID = 'plugin.video.alekino'
 scriptname = "Wtyczka XBMC www.mrknow.pl"
 ptv = xbmcaddon.Addon(scriptID)
 
-import pLog, Parser, settings, libCommon, urlparser
+import wbl_pLog, Parser, settings, libCommon, urlparser
 
 
-log = pLog.pLog()
+log = wbl_pLog.wbl_pLog()
 sets = settings.TVSettings()
 
 class pageparser:

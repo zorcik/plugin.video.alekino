@@ -13,10 +13,10 @@ BASE_RESOURCE_PATH = os.path.join( ptv.getAddonInfo('path'), "resources" )
 sys.path.append( os.path.join( BASE_RESOURCE_PATH, "lib" ) )
 sys.path.append( os.path.join( ptv.getAddonInfo('path'), "host" ) )
 
-import pLog, settings, Parser
+import wbl_pLog, settings, Parser
 import alekino, alekinoseriale
 
-log = pLog.pLog()
+log = wbl_pLog.wbl_pLog()
 
 class AlekinoTV:
   def __init__(self):

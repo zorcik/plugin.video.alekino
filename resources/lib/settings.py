@@ -2,10 +2,10 @@
 import xbmcplugin, xbmcaddon, xbmcgui, xbmc
 import sys, os, stat, re
 import urllib
-import pLog
+import wbl_pLog
 
 scriptID = sys.modules[ "__main__" ].scriptID
-log = pLog.pLog()
+log = wbl_pLog.wbl_pLog()
 
 
 class TVSettings:

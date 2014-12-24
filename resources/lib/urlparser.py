@@ -10,10 +10,10 @@ scriptID = 'plugin.video.alekino'
 scriptname = "Polish Live TV"
 ptv = xbmcaddon.Addon(scriptID)
 
-import pLog, parser, settings, libCommon,xppod
+import wbl_pLog, parser, settings, libCommon,xppod
 #import maxvideo, anyfiles
 
-log = pLog.pLog()
+log = wbl_pLog.wbl_pLog()
 sets = settings.TVSettings()
 
 CHARS = [

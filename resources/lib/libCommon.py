@@ -47,9 +47,9 @@ import xbmcaddon, xbmc, xbmcgui
 import simplejson as json
 import gzip, StringIO
 
-import pLog
+import wbl_pLog
 
-log = pLog.pLog()
+log = wbl_pLog.wbl_pLog()
 
 scriptID = sys.modules[ "__main__" ].scriptID
 scriptname = "Polish Live TV"
