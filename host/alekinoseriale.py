@@ -12,7 +12,7 @@ ptv = xbmcaddon.Addon(scriptID)
 BASE_RESOURCE_PATH = os.path.join( ptv.getAddonInfo('path'), "../resources" )
 sys.path.append( os.path.join( BASE_RESOURCE_PATH, "lib" ) )
 
-import wbl_pLog, settings, Parser,libCommon
+import wbl_pLog, settings, Parser,libCommon, urllib2
 
 log = wbl_pLog.wbl_pLog()
 
@@ -230,10 +230,16 @@ class alekinoseriale:
         query_data = {'url': 'http://alekino.tv/players/get', 'use_host': False, 'use_cookie': True, 'save_cookie': False, 'load_cookie': True, 'cookiefile': self.COOKIEFILE, 'use_post': True, 'return_data': True}
         data = self.cm.getURLRequestData(query_data, post_data)
         #print("Data",data)
-        match16 = re.compile('<iframe src="(.*?)" width="989" height="535" scrolling="no" frameborder="0">', re.DOTALL).findall(data)
+        match16 = re.compile('<iframe src="(.*?)" (.*?)>', re.DOTALL).findall(data)
         match17 = re.compile('<iframe src="(.*?)" style="border:0px; width: 630px; height: 430px;" scrolling="no"></iframe>', re.DOTALL).findall(data)
+        print("match16", match16)
+        print("match17", match17)
         if len(match16) > 0:
-            linkVideo = self.up.getVideoLink(match16[0].decode('utf8'))
+            req = urllib2.Request(match16[0][0].decode('utf8'))
+            res = urllib2.urlopen(req)
+            finalurl = res.geturl()
+            print ("redirect_link",finalurl)
+            linkVideo = self.up.getVideoLink(finalurl.decode('utf8'))
             return linkVideo + '|Referer=http://alekino.tv/assets/alekino.tv/swf/player.swf'
         if len(match17) > 0:
             linkVideo = self.up.getVideoLink(match17[0].decode('utf8'))

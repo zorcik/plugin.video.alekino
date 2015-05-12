@@ -12,7 +12,7 @@ ptv = xbmcaddon.Addon(scriptID)
 BASE_RESOURCE_PATH = os.path.join( ptv.getAddonInfo('path'), "../resources" )
 sys.path.append( os.path.join( BASE_RESOURCE_PATH, "lib" ) )
 
-import wbl_pLog, settings, Parser,libCommon, Player
+import wbl_pLog, settings, Parser,libCommon, Player, urllib2
 
 log = wbl_pLog.wbl_pLog()
 
@@ -164,9 +164,13 @@ class alekino:
         data = self.cm.getURLRequestData(query_data, post_data)
         match16 = re.compile('<iframe src="(.*?)" (.*?)', re.DOTALL).findall(data)
         print ("match16",match16,data)
+        req = urllib2.Request(match16[0][0].decode('utf8'))
+        res = urllib2.urlopen(req)
+        finalurl = res.geturl()
+        print ("redirect_link",finalurl)
         linkVideo = ''
         if len(match16) > 0:
-            linkVideo = self.up.getVideoLink(match16[0][0].decode('utf8'))
+            linkVideo = self.up.getVideoLink(finalurl.decode('utf8'))
             if len(linkVideo) > 0:
                 VideoData['link'] = linkVideo + '|Referer=http://alekino.tv/assets/alekino.tv/swf/player.swf'
             else:
