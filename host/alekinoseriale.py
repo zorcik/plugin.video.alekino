@@ -216,33 +216,55 @@ class alekinoseriale:
         xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
     def getMovieLinkFromXML(self, url):
+        progress = xbmcgui.DialogProgress()
+        progress.create('Ładowanie', 'Proszę czekać...')
+        progress.update( 0, "", "", "" )
         VideoData = {}
         query_data = { 'url': url, 'use_host': True, 'host': HOST, 'use_cookie': False, 'use_post': False, 'return_data': True }
         link = self.cm.getURLRequestData(query_data)
+        progress.update( 25, "", "", "" )
         #VideoData['year'] = str(self.getMovieYear(link))
         match1 = re.compile('<a href="#" data-type="player" data-version="standard" data-id="(.*?)">', re.DOTALL).findall(link)
         url1 = "http://alekino.tv/players/init/" + match1[0] + "?mobile=false"
         query_data = { 'url': url1, 'use_host': True, 'host': HOST, 'use_cookie': False, 'use_post': False, 'return_data': True }
         link = self.cm.getURLRequestData(query_data)
+        progress.update( 50, "", "", "" )
         match15 = re.compile('"data":"(.*?)"', re.DOTALL).findall(link)
         hash = match15[0].replace('\\','')
         post_data = {'hash': hash}
         query_data = {'url': 'http://alekino.tv/players/get', 'use_host': False, 'use_cookie': True, 'save_cookie': False, 'load_cookie': True, 'cookiefile': self.COOKIEFILE, 'use_post': True, 'return_data': True}
         data = self.cm.getURLRequestData(query_data, post_data)
+        progress.update( 75, "", "", "" )
         #print("Data",data)
         match16 = re.compile('<iframe src="(.*?)" (.*?)>', re.DOTALL).findall(data)
         match17 = re.compile('<iframe src="(.*?)" style="border:0px; width: 630px; height: 430px;" scrolling="no"></iframe>', re.DOTALL).findall(data)
         print("match16", match16)
         print("match17", match17)
         if len(match16) > 0:
-            req = urllib2.Request(match16[0][0].decode('utf8'))
-            res = urllib2.urlopen(req)
-            finalurl = res.geturl()
+            try:
+                req = urllib2.Request(match16[0][0].decode('utf8'))
+                res = urllib2.urlopen(req)
+                progress.update( 99, "", "", "" )
+                finalurl = res.geturl()
+            except urllib2.HTTPError as e:
+                progress.close()
+                print("ERROR getting link: ", e.strerror)
+                finalurl = ""
+                dialog = xbmcgui.Dialog()
+                dialog.ok("BŁĄD", " Wystąpił błąd podczas pobierania linku do filmu. Być może film nie jest już dostępny... ")                
+            except urllib2.URLError as e:
+                progress.close()
+                print("ERROR getting link: ", e.strerror)
+                finalurl = ""
+                dialog = xbmcgui.Dialog()
+                dialog.ok("BŁĄD", " Wystąpił błąd podczas pobierania linku do filmu. Proszę spróbować ponownie... ")                
             print ("redirect_link",finalurl)
             linkVideo = self.up.getVideoLink(finalurl.decode('utf8'))
+            progress.close()
             return linkVideo + '|Referer=http://alekino.tv/assets/alekino.tv/swf/player.swf'
         if len(match17) > 0:
             linkVideo = self.up.getVideoLink(match17[0].decode('utf8'))
+            progress.close()
             return linkVideo + '|Referer=http://alekino.tv/assets/alekino.tv/swf/player.swf'
 
 

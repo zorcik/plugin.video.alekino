@@ -149,24 +149,31 @@ class alekino:
 
 
     def getMovieLinkFromXML(self, url):
+        progress = xbmcgui.DialogProgress()
+        progress.create('Ładowanie', 'Proszę czekać...')
+        progress.update( 0, "", "", "" )
         VideoData = {}
         query_data = { 'url': url, 'use_host': True, 'host': HOST, 'use_cookie': False, 'use_post': False, 'return_data': True }
         link = self.cm.getURLRequestData(query_data)
+        progress.update( 25, "", "", "" )
         VideoData['year'] = str(self.getMovieYear(link))
         match1 = re.compile('<a href="#" data-type="player" data-version="standard" data-id="(.*?)">', re.DOTALL).findall(link)
         url1 = "http://alekino.tv/players/init/" + match1[0] + "?mobile=false"
         query_data = { 'url': url1, 'use_host': True, 'host': HOST, 'use_cookie': False, 'use_post': False, 'return_data': True }
         link = self.cm.getURLRequestData(query_data)
+        progress.update( 50, "", "", "" )
         match15 = re.compile('"data":"(.*?)"', re.DOTALL).findall(link)
         hash = match15[0].replace('\\','')
         post_data = {'hash': hash}
         query_data = {'url': 'http://alekino.tv/players/get', 'use_host': False, 'use_cookie': True, 'save_cookie': False, 'load_cookie': True, 'cookiefile': self.COOKIEFILE, 'use_post': True, 'return_data': True}
         data = self.cm.getURLRequestData(query_data, post_data)
+        progress.update( 75, "", "", "" )
         match16 = re.compile('<iframe src="(.*?)" (.*?)', re.DOTALL).findall(data)
         print ("match16",match16,data)
         req = urllib2.Request(match16[0][0].decode('utf8'))
         res = urllib2.urlopen(req)
         finalurl = res.geturl()
+        progress.update( 99, "", "", "" )
         print ("redirect_link",finalurl)
         linkVideo = ''
         if len(match16) > 0:
