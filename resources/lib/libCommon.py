@@ -12,11 +12,11 @@ method getURLRequestData(params):
 	post_data - Post data
 	params['return_data'] - True, or False. Return response read data.
 	params['read_data'] - True, or False. Use when params['return_data'] is False.
-	
+
 	If you want to get data from url use this method (for default host):
 	data = { 'url': <your url>, 'use_host': False, use_cookie': False, 'use_post': False, 'return_data': True }
 	response = self.getURLRequestData(data)
-	
+
 	If you want to get XML, or JSON data then:
 	data = { 'url': <your url>, 'use_host': False, use_cookie': False, 'use_post': False, 'return_data': False }
 	response = self.getURLRequestData(data)
@@ -36,7 +36,7 @@ method getURLRequestData(params):
 	If you want to load cookie file without post:
 	data = { 'url': <your url>, 'use_host': True, 'host': <your own user-agent define>, 'use_cookie': True, 'load_cookie': True, 'save_cookie': False, 'cookiefile': <path to cookie file>, 'use_post': False, 'return_data': True }
 	response = self.getURLRequestData(data)
-	
+
 	and etc...
 '''
 
@@ -77,18 +77,18 @@ HOST_TABLE = { 100: 'Mozilla/5.0 (Windows NT 6.1; rv:17.0) Gecko/20100101 Firefo
 	       113: 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)',
 	    }
 
-HOST = 'Mozilla/5.0 (Windows NT 6.1; rv:17.0) Gecko/20100101 Firefox/17.0'
+HOST = 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0'
 HISTORYFILE = xbmc.translatePath(ptv.getAddonInfo('profile') + "history.xml")
 
 #cj = cookielib.LWPCookieJar()
 cj = cookielib.MozillaCookieJar()
 
- 
+
 class common:
     def __init__(self):
         pass
 
-    def html_special_chars(self,txt): 
+    def html_special_chars(self,txt):
         txt = txt.replace('#038;','')
         txt = txt.replace('&#34;','"')
         txt = txt.replace('&#39;','\'')
@@ -108,7 +108,7 @@ class common:
         txt = txt.replace('\u017a','ź').replace('\u0179','Ź')
         txt = txt.replace('\u017c','ż').replace('\u017b','Ż')
         return txt
-    
+
     def getCookieItem(self, cookiefile, item):
 	ret = ''
 	cj = cookielib.MozillaCookieJar()
@@ -116,7 +116,7 @@ class common:
 	for cookie in cj:
 	    if cookie.name == item: ret = cookie.value
 	return ret
-    
+
     #item = {'name': 'xxx', 'value': 'yyy', 'domain': 'zzz'}
     def addCookieItem(self, cookiefile, item, load_cookie=True):
 	if load_cookie==True and os.path.isfile(cookiefile):
@@ -153,6 +153,9 @@ class common:
         if not params['use_post']:
             req = urllib2.Request(params['url'])
             req.add_header('User-Agent', host)
+
+        req.add_header('Accept-encoding', 'gzip, deflate')
+
         if params['use_cookie']:
             response = opener.open(req)
         else:
@@ -166,30 +169,28 @@ class common:
 	        except:
 	        	out_data = response
         if params['return_data']:
-            #
-            if params['use_cookie'] == False:
-                #print ("ENC",response.headers.get('content-encoding', ''),params)
-                if response.info().get('Content-Encoding') == 'gzip':
-                    buf = StringIO.StringIO( response.read())
-                    f = gzip.GzipFile(fileobj=buf)
-                    out_data = f.read()
-                else:
-                    out_data = response.read()
-            else:
-                out_data = response.read()
-            
-            response.close()
+             if response.info().get('Content-Encoding') == 'gzip':
+                 buf = StringIO.StringIO( response.read())
+                 f = gzip.GzipFile(fileobj=buf)
+                 out_data = f.read()
+             else:
+                 out_data = response.read()
+             response.close()
         if params['use_cookie'] and params['save_cookie']:
         	cj.save(params['cookiefile'], ignore_discard = True)
-        return out_data 
-               
+        #print ("ENC",response.headers.get('content-encoding', ''),params)
+        #print("ENC2", response.info().get('Content-Encoding'))
+        #print("REQUESTED URL:", params['url'])
+        #print("OUTDATDA", out_data)
+        return out_data
+
     def makeABCList(self):
         strTab = []
         strTab.append('0 - 9');
         for i in range(65,91):
-            strTab.append(str(unichr(i)))	
+            strTab.append(str(unichr(i)))
         return strTab
-    
+
     def getItemByChar(self, char, tab):
         strTab = []
         char = char[0]
@@ -200,8 +201,8 @@ class common:
             else:
                 if ord(tab[i][0]) >= 48 and ord(tab[i][0]) <= 57:
                     strTab.append(tab[i])
-        return strTab       
-    
+        return strTab
+
     def isNumeric(self,s):
         try:
             float(s)
@@ -213,8 +214,8 @@ class common:
     def checkDir(self, path):
         if not os.path.isdir(path):
             os.mkdir(path)
-            
-    
+
+
     def getRandomHost(self):
 	host_id = random.choice(HOST_TABLE.keys())
 	log.info("host ID: " + str(host_id))
@@ -240,10 +241,10 @@ class common:
             xbmcPlayer.play(url, liz)
         except:
             d = xbmcgui.Dialog()
-	    d.ok('B�?�?d przy przetwarzaniu, lub wyczerpany limit czasowy ogl�?dania.', 'Zarejestruj si�? i op�?a�? abonament.', 'Aby ogl�?da�? za darmo spróbuj ponownie za jaki�? czas')        
+	    d.ok('B�?�?d przy przetwarzaniu, lub wyczerpany limit czasowy ogl�?dania.', 'Zarejestruj si�? i op�?a�? abonament.', 'Aby ogl�?da�? za darmo spróbuj ponownie za jaki�? czas')
 	    return False
 	return True
-	    
+
 
     def formatDialogMsg(self, msg):
 	valTab = []
@@ -276,7 +277,7 @@ class common:
 			valTab[2] = s.strip()
 		    else:
 			break
-	return valTab	    
+	return valTab
 
 
 
@@ -284,7 +285,7 @@ class common:
 class history:
     def __init__(self):
         pass
-    
+
     def readHistoryFile(self):
 	file = open(HISTORYFILE, 'r')
 	root = ET.parse(file).getroot()
@@ -295,7 +296,7 @@ class history:
     def writeHistoryFile(self, root):
 	file = open(HISTORYFILE, 'w')
 	ET.ElementTree(root).write(file)
-	file.close() 
+	file.close()
 
 
     def loadHistoryFile(self, service):
@@ -303,7 +304,7 @@ class history:
 	    self.makeHistoryFile(service)
 	history = self.parseHistoryFile(service)
 	return history
-    
+
 
     def addHistoryItem(self, service, item):
 	if not os.path.isfile(HISTORYFILE):
@@ -329,8 +330,8 @@ class history:
 			else: child.text = strTab[i-1]
 			i = i + 1
 		self.writeHistoryFile(root)
-		
-		
+
+
     def clearHistoryItems(self, service):
 	root = self.readHistoryFile()
 	for node in root.getiterator(service):
@@ -345,12 +346,12 @@ class history:
 	serviceList = root.findall(service)
 	if len(serviceList) == 0:
 	    child = ET.Element(service)
-	    root.append(child)   
+	    root.append(child)
 	    for i in range(5):
 		item = ET.Element('search')
 		child.append(item)
 	    self.writeHistoryFile(root)
-	    
+
 	for node in root.getiterator(service):
 	    for child in node.getchildren():
 		if child.text != None:
@@ -359,11 +360,11 @@ class history:
 		    strTab.append('')
 	return strTab
 
-    
+
     def makeHistoryFile(self, service):
 	root = ET.Element('history')
 	child = ET.Element(service)
-	root.append(child)   
+	root.append(child)
 	for i in range(5):
 	    item = ET.Element('search')
 	    child.append(item)
@@ -375,21 +376,21 @@ class history:
 class Chars:
     def __init__(self):
         pass
-    
+
     def setCHARS(self):
         return CHARS
-    
+
     def replaceString(self, array, string):
         out = string
         for i in range(len(array)):
             out = string.replace(array[i][0], array[i][1])
             string = out
-        return out    
-    
+        return out
+
     def replaceChars(self, string):
         out = string
         for i in range(len(CHARS)):
             out = string.replace(CHARS[i][0], CHARS[i][1])
             string = out
-        return out        
-    
+        return out
+

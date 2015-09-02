@@ -2,7 +2,7 @@
 import urllib, urllib2, re, os, sys, math
 import xbmcgui, xbmc, xbmcaddon, xbmcplugin
 from urlparse import urlparse, parse_qs
-import urlparser,json
+import urlparser,json, httplib
 
 
 scriptID = 'plugin.video.alekino'
@@ -19,7 +19,7 @@ log = wbl_pLog.wbl_pLog()
 mainUrl = 'http://alekino.tv'
 catUrl = 'http://alekino.tv/filmy/'
 
-HOST = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:32.0) Gecko/20100101 Firefox/32.0'
+HOST = 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0'
 
 MENU_TAB = {0: "Filmy",
             1: "Filmy z lektorem",
@@ -170,14 +170,23 @@ class alekino:
         progress.update( 75, "", "", "" )
         match16 = re.compile('<iframe src="(.*?)" (.*?)', re.DOTALL).findall(data)
         print ("match16",match16,data)
-        req = urllib2.Request(match16[0][0].decode('utf8'))
-        res = urllib2.urlopen(req)
+        print ("match16-2", match16[0][0])
+        req = urllib2.Request(match16[0][0])
+        req.add_header('User-Agent', HOST)
+        req.add_header('Accept-encoding', 'gzip, deflate')
+        try:
+            res = urllib2.urlopen(req)
+        except httplib.BadStatusLine:
+            print ("wrong response")
+            return ""
+
         finalurl = res.geturl()
         progress.update( 99, "", "", "" )
         print ("redirect_link",finalurl)
         linkVideo = ''
-        if len(match16) > 0:
-            linkVideo = self.up.getVideoLink(finalurl.decode('utf8'))
+        print("finalurl", finalurl)
+        if len(finalurl) > 0:
+            linkVideo = self.up.getVideoLink(finalurl)
             if len(linkVideo) > 0:
                 VideoData['link'] = linkVideo + '|Referer=http://alekino.tv/assets/alekino.tv/swf/player.swf'
             else:
@@ -294,7 +303,7 @@ class alekino:
         icon = self.parser.getParam(params, "icon")
         strona = self.parser.getParam(params, "strona")
         filtrowanie = self.parser.getParam(params, "filtrowanie")
-        
+
         print ("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZD",category,url,strona,filtrowanie,name)
         if name == None:
             self.listsMainMenu(MENU_TAB)
